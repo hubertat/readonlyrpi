@@ -2,12 +2,18 @@
 My custom script for making raspberry pi os (buster) readonly.
 
 Based on:
-https://hallard.me/raspberry-pi-read-only/
-https://gitlab.com/larsfp/rpi-readonly/
+* https://hallard.me/raspberry-pi-read-only/
+* https://gitlab.com/larsfp/rpi-readonly/
+
+Packages I wanted (not really needed):
+* joe
+* screen
+* git
 
 Ntp sync issue:
-* Added `ntp` and `ntpdate`
-* `ntp.service` with `PrivateTmp=false`
+* Added *ntp* and *ntpdate*
+* *ntp.service* with `PrivateTmp=false`
+* *tmpfs* for */var/lib/ntp*
 
 Tricks for certain apps:
 * Apache2, edit logpath in /etc/apache2/env

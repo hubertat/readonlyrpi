@@ -14,19 +14,19 @@ if echo "$answer" | grep -iq "^y" ;then
 fi
 
 echo "* Installing some needed and not exactly needed software..."
-apt install -y ntpdate joe screen git
+apt install -y busybox-syslogd ntp ntpdate joe screen git # watchdog
 
 echo "*Removing some unwanted software..."
-apt remove -y --purge logrotate dphys-swapfile rsyslog
+apt remove -y --purge anacron logrotate dphys-swapfile rsyslog
 
 echo "* Changing boot up parameters."
 cp /boot/cmdline.txt /boot/cmdline.txt.backup
 uuid=`grep '/ ' /etc/fstab | awk -F'[=]' '{print $2}' | awk '{print $1}'`
 echo "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID=$uuid rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait noswap ro fastboot" > /boot/cmdline.txt
 
-# echo "* Move resolv.conf to tmpfs."
-# mv /etc/resolv.conf /tmp/dhcpcd.resolv.conf
-# ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
+echo "* Move resolv.conf to tmpfs."
+mv /etc/resolv.conf /tmp/dhcpcd.resolv.conf
+ln -s /tmp/dhcpcd.resolv.conf /etc/resolv.conf
 
 #echo "* Moving pids and other files to tmpfs"
 #sed -i.bak '/PIDFile/c\PIDFile=\/run\/dhcpcd.pid' /etc/systemd/system/dhcpcd5.service
@@ -117,7 +117,7 @@ if [ 0 -eq $( grep -c ',ro' /etc/fstab ) ]; then
   tmpfs           /tmp             tmpfs   nosuid,nodev         0       0
   tmpfs           /var/log         tmpfs   nosuid,nodev         0       0
   tmpfs           /var/tmp         tmpfs   nosuid,nodev         0       0
-  tmpfs           /var/lib/dhcpcd tmpfs   nosuid,nodev         0       0
+  tmpfs           /var/lib/dhcpcd5 tmpfs   nosuid,nodev         0       0
   tmpfs           /var/lib/ntp     tmpfs   nosuid,nodev         0       0
 " >> /etc/fstab
 fi
